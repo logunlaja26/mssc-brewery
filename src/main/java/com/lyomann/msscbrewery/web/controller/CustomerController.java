@@ -1,6 +1,7 @@
 package com.lyomann.msscbrewery.web.controller;
 
 import com.lyomann.msscbrewery.services.CustomerService;
+import com.lyomann.msscbrewery.web.model.BeerDto;
 import com.lyomann.msscbrewery.web.model.CustomerDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -24,7 +25,7 @@ public class CustomerController {
     }
 
     @PostMapping
-    public ResponseEntity handlePost(CustomerDto customerDto){
+    public ResponseEntity handlePost(@RequestBody CustomerDto customerDto){
         CustomerDto savedDto = customerService.saveNewCustomer(customerDto);
 
         HttpHeaders httpHeaders = new HttpHeaders();
@@ -34,8 +35,17 @@ public class CustomerController {
     }
 
     @PutMapping({"/{customerId}"})
-    public void handleUpdate(){
+    public ResponseEntity handleUpdate(@PathVariable UUID customerId, @RequestBody CustomerDto customerDto){
+        customerService.updateCustomer(customerId , customerDto);
 
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
+
+    }
+
+    @DeleteMapping({"/{customerId}"})
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteCustomer(@PathVariable("customerId") UUID customerId){
+        customerService.deleteById(customerId);
     }
 
 
